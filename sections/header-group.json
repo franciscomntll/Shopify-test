@@ -6,11 +6,11 @@
       "type": "announcement-bar",
       "blocks": {
         "announcement-bar-0": {
-          "type": "announcement",
+          "type": "announcement", 
           "settings": {
-            "text": "Welcome to our store",
+            "text": "30% OFF ALL orders UNTIL 4/27",
             "text_alignment": "center",
-            "color_scheme": "background-1",
+            "color_scheme": "accent-1",
             "link": ""
           }
         }

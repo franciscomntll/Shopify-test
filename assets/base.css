@@ -344,9 +344,6 @@ body,
   list-style: none;
 }
 
-.hidden {
-  display: none !important;
-}
 
 .visually-hidden {
   position: absolute !important;
@@ -3010,4 +3007,8 @@ details-disclosure > details {
   .localization-form__select:focus {
     outline: transparent solid 1px;
   }
+  
+}
+.swiper-pagination-bullet-active {
+  background-color: #7AA65A 
 }

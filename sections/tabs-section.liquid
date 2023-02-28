@@ -1,0 +1,154 @@
+<div x-data="{tabActive : 1}" class="max-w-screen-lg mx-auto inset-x-0 py-20 flex flex-col gap-10 px-5 lg:px-0">
+  {% for block in section.blocks %}
+    {% case block.type %}
+      {% when "heading" %}
+        {% if block.settings.heading != blank %}
+        <!-- HEADING -->
+        <h2 class="text-primary font-black text-6xl w-full text-center tracking-normal	">
+          {% assign arrWords = block.settings.heading | split: " " %}
+          <span class="opacity-60">{{ arrWords | slice: 0, block.settings.numberOpacityWords | join: ' ' }}</span>
+          {% assign countWords = arrWords | size %}
+          {{ arrWords | slice: block.settings.numberOpacityWords, countWords | join: ' ' }}
+        </h2>
+      {% endif %}
+  {% else %}
+
+    {% endcase %}
+
+  {% endfor %}
+
+  {% assign collectionBlocksFilter = section.blocks | where: 'type', "collectionBlock" %}
+
+    <div>
+    <!-- TAB HEADER -->
+    <ul class="w-full  border border-gray-200  p-3 rounded-3xl grid gap-4 grid-cols-auto-fit text-center">
+      {% for block in collectionBlocksFilter %}
+        {% assign collection = block.settings.collection %}
+
+        <li
+          x-on:click="tabActive = {{forloop.index}}"
+          :class="tabActive == {{ forloop.index }} ? 'bg-primary text-white' : ''"
+          class="font-semibold text-primary text-2xl cursor-pointer rounded-3xl py-5 px-12 transition hover:bg-primary hover:text-white uppercase">{{ collection.title }}</li>
+
+
+      {% endfor %}
+    </ul>
+
+    <!-- TAB CONTENT -->
+    {% for block in collectionBlocksFilter %}
+      {% assign collection = block.settings.collection %}
+      {% assign subHeading = block.settings.subHeading %}
+
+      <h3 x-show="tabActive == {{forloop.index}}" class="text-2xl text-primary font-semibold border-b opacity-60 mx-auto inset-x-0 pt-10 w-max capitalize">{{ subHeading }}</h3>
+      <!-- Slider main container -->
+      <div x-show="tabActive == {{forloop.index}}" class="w-full grid grid-cols-1 swiper w-full swiperTabs">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper w-full">
+          {% assign sortProducts = collection.products | sort: "title" %}
+            {% for product in sortProducts limit: 5 %}
+            <!-- PRODUCT CARD -->
+            <div class="swiper-slide py-20">
+              <a href="{{ product.url }}" class=" hover:scale-105 transition lg:w-72 mx-auto flex flex-col items-center justify-start gap-6 ">
+                <img class="rounded-xl" src="{{ product.featured_image | img_url: 'medium' }}">
+                {% assign isPopular = product.tags | where: 'Most Popular' %}
+                <div class="text-center">
+                  {% if isPopular != blank %}
+                    <small class="bg-primary rounded-xl text-white text-lg px-5 uppercase py-1.5">
+                      {{ isPopular }}
+                    </small>
+                  {% endif %}
+                  <h3 class="font-bold text-primary ">{{ product.title }}</h3>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+        <!-- If we need pagination -->
+        <div class="swiper-pagination"></div>
+      </div>
+
+    {% endfor %}
+
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Tabs Section",
+    "tag": "section",
+    "blocks": [
+      {
+        "type": "heading",
+        "name": "Heading",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "I Need Help choosing a color"
+          }, {
+            "type": "number",
+            "id": "numberOpacityWords",
+            "label": "Number Opacity Words",
+            "default": 3
+          }
+        ]
+      }, {
+        "type": "collectionBlock",
+        "name": "Collection Block",
+        "settings": [
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection"
+          }, {
+            "type": "text",
+            "id": "subHeading",
+            "label": "Sub Heading",
+            "default": "I'm not sure"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+<script>
+  const swiperTabs = new Swiper(".swiperTabs", { // Optional parameters
+    direction: "horizontal",
+    loop: false,
+    breakpoints: {
+      0: {
+        slidesPerView: 1,
+        spaceBetween: 30
+
+      },
+
+      480: {
+        slidesPerView: 2,
+        spaceBetween: 20
+      },
+
+      720: {
+        slidesPerView: 3,
+        spaceBetween: 20
+
+      },
+      1024: {
+        slidesPerView: 4,
+        spaceBetween: 20
+
+      },
+      1444: {
+        slidesPerView: 5,
+        spaceBetween: 20
+
+      }
+    },
+    pagination: {
+      el: ".swiper-pagination"
+    }
+
+  });
+</script>
